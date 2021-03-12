@@ -17,6 +17,14 @@ public class ResourceContext {
     }
 
     public int getQueueSize(){
-        return Integer.parseInt(props.getProperty("queueSize"));
+        return Integer.parseInt(props.getProperty("queueCapacity"));
+    }
+
+    public String getTaskFileUri(){
+        return props.getProperty("taskFileUri");
+    }
+
+    public String getTaskReaderClassName(){
+        return props.getProperty("taskReaderClassName");
     }
 }
