@@ -2,7 +2,6 @@ package com.microsoft.lb.services;
 
 import com.microsoft.lb.task.Task;
 
-import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 

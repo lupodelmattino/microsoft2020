@@ -1,8 +1,10 @@
 package com.microsoft.lb.util;
 
 import com.microsoft.lb.exceptions.ConfigurationException;
+import com.microsoft.lb.node.api.SimpleExecutorNodeFactory;
 import com.microsoft.lb.nodeLoader.FileSystemJsonNodeLoader;
 import com.microsoft.lb.nodeLoader.NodeLoader;
+import com.microsoft.lb.services.ActivityLogger;
 import com.microsoft.lb.services.InputQueue;
 import com.microsoft.lb.services.LoadBalancer;
 import com.microsoft.lb.services.TaskLoaderJob;
@@ -11,11 +13,23 @@ import com.microsoft.lb.task.api.TaskReader;
 import com.microsoft.lb.node.api.NodeFactory;
 
 import java.io.FileNotFoundException;
-import java.lang.reflect.Constructor;
 
 public class AppConfig {
-    private ResourceContext context = new ResourceContext();
-    private InputQueue inputQueue = new InputQueue(context.getQueueCapacity());
+    private ResourceContext context;
+    private InputQueue inputQueue;
+    private ActivityLogger activityLogger;
+    private SimpleExecutorNodeFactory nodeFactory;
+    public AppConfig() {
+        context = new ResourceContext();
+        inputQueue = new InputQueue(context.getQueueCapacity());
+        activityLogger = new ActivityLogger();
+        activityLogger.setAppConfig(this);
+        activityLogger.init();
+        nodeFactory = new SimpleExecutorNodeFactory();
+        nodeFactory.setActivityLogger(activityLogger);
+
+    }
+
     public InputQueue getInputQueue(){
         return inputQueue;
     }
@@ -33,8 +47,12 @@ public class AppConfig {
         } catch (FileNotFoundException e) {
             throw new ConfigurationException("Task input file wasn't found at", e);
         }
-
     }
+
+    public ActivityLogger getActivityLogger(){
+        return activityLogger;
+    }
+
 
     public TaskLoaderJob getTaskLoader(){
         TaskLoaderJob tl = new TaskLoaderJob();
@@ -43,15 +61,7 @@ public class AppConfig {
     }
 
     public NodeFactory getNodeFactory() {
-        try{
-            String className = context.getNodeFactoryClassName();
-            Class<?> clazz = Class.forName(className);
-            Constructor<? extends NodeFactory> ctor = (Constructor<? extends NodeFactory>) clazz.getConstructor();
-            NodeFactory factory = ctor.newInstance();
-            return factory;
-        }catch (Exception e){
-            throw new ConfigurationException("Failed to instanciate Node Factory");
-        }
+        return nodeFactory;
     }
 
     public NodeLoader getNodeLoader() {

@@ -24,15 +24,11 @@ public class ResourceContext {
         return props.getProperty("taskFileUri");
     }
 
-    public String getTaskReaderClassName(){
-        return props.getProperty("taskReaderClassName");
-    }
-
     public String getNodeConfigPath() {
         return props.getProperty("nodeConfigPath");
     }
 
-    public String getNodeFactoryClassName() {
-        return props.getProperty("nodeFactoryClassName");
+    public String getOutputFilePath() {
+        return props.getProperty("outputFilePath");
     }
 }
