@@ -1,7 +1,8 @@
 package com.microsoft.lb;
 
 
-import com.microsoft.lb.services.TaskLoader;
+import com.microsoft.lb.services.LoadBalancer;
+import com.microsoft.lb.services.TaskLoaderJob;
 import com.microsoft.lb.util.AppConfig;
 import com.microsoft.lb.util.ResourceContext;
 
@@ -17,8 +18,10 @@ public class App {
     private ResourceContext resourceContext = new ResourceContext();
     private AppConfig appConfig = new AppConfig();
     public void execute(){
-        TaskLoader taskLoader = appConfig.getTaskLoader();
+        TaskLoaderJob taskLoader = appConfig.getTaskLoader();
         taskLoader.loadTasks();
-		System.out.println("Q capacity:" + resourceContext.getQueueSize());
+        LoadBalancer lb = appConfig.getLoadBalancer();
+        lb.balance();
+		System.out.println("Q capacity:" + resourceContext.getQueueCapacity());
     }
 }

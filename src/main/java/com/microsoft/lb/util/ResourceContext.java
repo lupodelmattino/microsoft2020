@@ -16,7 +16,7 @@ public class ResourceContext {
         }
     }
 
-    public int getQueueSize(){
+    public int getQueueCapacity(){
         return Integer.parseInt(props.getProperty("queueCapacity"));
     }
 
@@ -26,5 +26,13 @@ public class ResourceContext {
 
     public String getTaskReaderClassName(){
         return props.getProperty("taskReaderClassName");
+    }
+
+    public String getNodeConfigPath() {
+        return props.getProperty("nodeConfigPath");
+    }
+
+    public String getNodeFactoryClassName() {
+        return props.getProperty("nodeFactoryClassName");
     }
 }

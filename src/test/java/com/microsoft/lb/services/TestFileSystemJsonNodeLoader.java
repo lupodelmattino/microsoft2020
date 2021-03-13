@@ -1,10 +1,9 @@
 package com.microsoft.lb.services;
 
-import com.microsoft.lb.services.nodes.NodeLoader;
-import com.microsoft.lb.services.nodes.NodeMetadata;
+import com.microsoft.lb.nodeLoader.FileSystemJsonNodeLoader;
 import org.junit.Test;
 
-public class TestNodeLoader {
+public class TestFileSystemJsonNodeLoader {
     @Test
     public void testLoader() {
         //todo: contains temporary code
@@ -16,8 +15,8 @@ public class TestNodeLoader {
                 "{ \"node_name\": \"node_4\", \"accepted_task_type\": \"database_task\" }\n" +
                 "]\n" +
                 "}";
-        NodeLoader nodeLoader = new NodeLoader();
-        NodeMetadata nm = nodeLoader.load(input);
-        nm.getNodes().stream().forEach(e -> System.out.println(e.getName()));
+        FileSystemJsonNodeLoader nodeLoader = new FileSystemJsonNodeLoader();
+//        NodeMetadata nm = nodeLoader.load(input);
+//        nm.getNodes().stream().forEach(e -> System.out.println(e.getName()));
     }
 }

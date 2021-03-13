@@ -1,24 +1,40 @@
 package com.microsoft.lb.services;
 
-import com.microsoft.lb.model.Task;
-import com.microsoft.lb.services.dispatchers.TaskDispatcher;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.microsoft.lb.dispatcher.DispatcherRegistry;
+import com.microsoft.lb.dispatcher.api.TaskDispatcher;
+import com.microsoft.lb.exceptions.DispatcherException;
+import com.microsoft.lb.task.Task;
+import com.microsoft.lb.util.AppConfig;
 
 public class LoadBalancer {
-    //TODO:Create registry instead the map
-    private Map<String, TaskDispatcher> dispatcherMap = new HashMap<>();
-    private void addDispatcher(String nodeType, TaskDispatcher taskDispatcher){
-        dispatcherMap.put(nodeType, taskDispatcher);
+    private AppConfig appConfig;
+    private DispatcherRegistry dispatcherRegistry;
+    private InputQueue inputQueue;
+    public void setAppConfig(AppConfig appConfig) {
+        this.appConfig = appConfig;
     }
-
-    public void dispatchTask(Task task){
-        TaskDispatcher dispatcher = dispatcherMap.get(task.getType());
-        if(dispatcher == null){
-            throw new IllegalArgumentException(String.format("Invalid task type: %s," +
-                    task.getType()));
+    public void init(){
+        dispatcherRegistry = appConfig.getNodeLoader().getDispatcherRegistry();
+        inputQueue = appConfig.getInputQueue();
+    }
+    public void balance(){
+        Task task = null;
+        System.out.println("About to start load balancer with " + inputQueue.toString() + " size " + inputQueue.getSize());
+        try {
+            while (true) {
+                try {
+                    task = inputQueue.take();
+                    TaskDispatcher dispatcher = dispatcherRegistry.getDispatcher(task.getType());
+                    System.out.println("About to dispatch the task " + task);
+                    dispatcher.dispatch(task);
+                } catch (DispatcherException e) {
+                    //todo:replace with logger
+                    System.out.println(String.format("Failed to dispatch Task: %s", task.toString()));
+                    e.printStackTrace();
+                }
+            }
+        }catch (InterruptedException e){
+            System.out.println("Shutting down the load balancer");
         }
-        dispatcher.dispatch(task);
     }
 }

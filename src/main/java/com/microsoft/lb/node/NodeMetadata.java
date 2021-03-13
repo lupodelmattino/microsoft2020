@@ -1,4 +1,4 @@
-package com.microsoft.lb.services.nodes;
+package com.microsoft.lb.node;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

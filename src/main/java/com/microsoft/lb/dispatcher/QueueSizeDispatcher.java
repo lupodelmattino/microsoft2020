@@ -1,10 +1,11 @@
-package com.microsoft.lb.services.dispatchers;
+package com.microsoft.lb.dispatcher;
 
-import com.microsoft.lb.model.Task;
-import com.microsoft.lb.services.nodes.ExecutorNode;
+import com.microsoft.lb.dispatcher.api.TaskDispatcher;
+import com.microsoft.lb.node.api.ExecutorNode;
+import com.microsoft.lb.task.Task;
 
 public class QueueSizeDispatcher implements TaskDispatcher {
-    //todo: implement methods
+    //todo: implement methods for checkpoint 2
     @Override
     public void dispatch(Task task) {
         throw new RuntimeException("not implemented");

@@ -1,12 +1,13 @@
-package com.microsoft.lb.services.dispatchers;
+package com.microsoft.lb.dispatcher;
 
-import com.microsoft.lb.model.Task;
-import com.microsoft.lb.services.nodes.ExecutorNode;
+import com.microsoft.lb.dispatcher.api.TaskDispatcher;
+import com.microsoft.lb.node.api.ExecutorNode;
+import com.microsoft.lb.task.Task;
 
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class RoundRobinDispatcher implements TaskDispatcher{
+public class RoundRobinDispatcher implements TaskDispatcher {
     private Queue<ExecutorNode> nodes = new LinkedList<>();
     @Override
     public void dispatch(Task task) {
