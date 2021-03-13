@@ -2,13 +2,15 @@ package com.microsoft.lb.node;
 
 import com.microsoft.lb.node.api.ExecutorNode;
 import com.microsoft.lb.services.ActivityLogger;
-import com.microsoft.lb.task.EOFTask;
 import com.microsoft.lb.task.Task;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * Executes tasks in a separate thread using task queue
+ */
 public class SimpleExecutorNode implements ExecutorNode, Runnable {
     private static final Logger LOG = Logger.getLogger(SimpleExecutorNode.class);
     private ActivityLogger activityLogger;
@@ -36,15 +38,17 @@ public class SimpleExecutorNode implements ExecutorNode, Runnable {
         try {
             while(true) {
                 Task task = queue.take();
-                if(task.getType().equals(Task.EOF)){
+                if(task.getType().equals(Task.EOF)){//Shut down if end of input
                     break;
                 }
+                //take the latest timestamp
                 currentTimestamp = Math.max(task.getTsStart(), currentTimestamp);
                 synchronized (task) {
                     String startMessage = String.format("Started task=’%s’ of type=’%s’ on node=’%s’ at ‘%d’\n",
                             task.getName(), task.getType(), getName(), currentTimestamp
                     );
                     activityLogger.log(startMessage);
+                    //Sleep duration time
                     Thread.sleep(task.getDuration() * 1000);
                     currentTimestamp += task.getDuration();
                     String endMessage = String.format("Finished task=’%s’ of type=’%s’ on node=’%s’ at ‘%d’\n",

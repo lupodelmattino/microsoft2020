@@ -12,7 +12,10 @@ import org.apache.log4j.Logger;
 import java.io.*;
 import java.util.Scanner;
 
-public class FileSystemJsonTaskReader implements TaskReader, Closeable {
+/**
+ * Reads tasks from json file in filesystem according to the format provided in the assignment doc
+ */
+public class FileSystemJsonTaskReader implements TaskReader {
     private final static Logger LOG = Logger.getLogger(FileSystemJsonTaskReader.class);
     private AppConfig appConfig;
     private Scanner scan;

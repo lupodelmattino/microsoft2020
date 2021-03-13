@@ -7,8 +7,12 @@ import com.microsoft.lb.task.Task;
 import java.util.LinkedList;
 import java.util.Queue;
 
+/**
+ * Dispatches tasks to {@link ExecutorNode} nodes using Round Robin algorithm
+ */
 public class RoundRobinDispatcher implements TaskDispatcher {
     private Queue<ExecutorNode> nodes = new LinkedList<>();
+
     @Override
     public void dispatch(Task task) {
         if(!task.getType().equals(Task.EOF)) {
@@ -26,6 +30,4 @@ public class RoundRobinDispatcher implements TaskDispatcher {
     public void addNode(ExecutorNode node) {
         nodes.offer(node);
     }
-
-
 }

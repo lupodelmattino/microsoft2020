@@ -2,7 +2,9 @@ package com.microsoft.lb.task.api;
 
 import com.microsoft.lb.task.Task;
 
-public interface TaskReader {
+import java.io.Closeable;
+
+public interface TaskReader extends Closeable {
 
     Task readTask();
 }

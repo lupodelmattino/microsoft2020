@@ -1,5 +1,8 @@
 package com.microsoft.lb.task;
 
+/**
+ * Used to signal about end of input
+ */
 public class EOFTask implements Task {
     @Override
     public String getType() {

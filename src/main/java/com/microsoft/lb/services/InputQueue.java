@@ -5,6 +5,9 @@ import com.microsoft.lb.task.Task;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * Shared queue decorator for queueing task to {@link LoadBalancer}
+ */
 public class InputQueue {
     private final int capacity;
     private BlockingQueue<Task> queue = new LinkedBlockingQueue();

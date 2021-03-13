@@ -9,6 +9,9 @@ import com.microsoft.lb.util.AppConfig;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Provides access to {@link ExecutorNode} nodes via {@link TaskDispatcher} using {@link Map} of dispatchers
+ */
 public class DispatcherRegistry {
 
     private Map<String, TaskDispatcher> dispatcherMap = new HashMap<>();
@@ -18,6 +21,10 @@ public class DispatcherRegistry {
         this.appConfig = appConfig;
     }
 
+    /**
+     * Register new {@link ExecutorNode} node
+     * @param node
+     */
     public void addNode(ExecutorNode node){
         TaskDispatcher dispatcher = dispatcherMap.get(node.getType());
         if(dispatcher == null){
@@ -28,6 +35,12 @@ public class DispatcherRegistry {
     }
 
 
+    /**
+     *
+     * @param type task type
+     * @return according task type
+     * @throws DispatcherException
+     */
     public TaskDispatcher getDispatcher(String type) throws DispatcherException {
         TaskDispatcher dispatcher = dispatcherMap.get(type);
         if(dispatcher == null){
@@ -36,6 +49,10 @@ public class DispatcherRegistry {
         return dispatcher;
     }
 
+    /**
+     * Currently used for end of input signalling. The usage can be extended
+     * @param task
+     */
     public void broadcast(Task task) {
         dispatcherMap.values().stream().forEach(d -> d.dispatch(task));
     }
