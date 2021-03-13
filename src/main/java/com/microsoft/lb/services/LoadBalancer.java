@@ -1,12 +1,15 @@
 package com.microsoft.lb.services;
 
+import com.microsoft.lb.App;
 import com.microsoft.lb.dispatcher.DispatcherRegistry;
 import com.microsoft.lb.dispatcher.api.TaskDispatcher;
 import com.microsoft.lb.exceptions.DispatcherException;
 import com.microsoft.lb.task.Task;
 import com.microsoft.lb.util.AppConfig;
+import org.apache.log4j.Logger;
 
 public class LoadBalancer {
+    private final static Logger LOG = Logger.getLogger(LoadBalancer.class);
     private AppConfig appConfig;
     private DispatcherRegistry dispatcherRegistry;
     private InputQueue inputQueue;
@@ -20,26 +23,25 @@ public class LoadBalancer {
     }
     public void balance(){
         Task task = null;
-        System.out.println("About to start load balancer with " + inputQueue.toString() + " size " + inputQueue.getSize());
+        LOG.info("About to start load balancer with " + inputQueue.toString() + " capacity " + inputQueue.getSize());
         try {
             while (true) {
                 try {
                     task = inputQueue.take();
                     synchronized (task) {
                         TaskDispatcher dispatcher = dispatcherRegistry.getDispatcher(task.getType());
-                        System.out.println("About to dispatch the task " + task);
+                        LOG.debug("About to dispatch the task " + task);
                         Thread.sleep((task.getTsStart() - currentTimeStamp) * 1000);
                         currentTimeStamp = task.getTsStart();
                         dispatcher.dispatch(task);
                     }
                 } catch (DispatcherException e) {
-                    //todo:replace with logger
-                    System.out.println(String.format("Failed to dispatch Task: %s", task.toString()));
+                    LOG.error(String.format("Failed to dispatch Task: %s", task.toString()));
                     e.printStackTrace();
                 }
             }
         }catch (InterruptedException e){
-            System.out.println("Shutting down the load balancer");
+            LOG.warn("Shutting down the load balancer");
         }
     }
 }
