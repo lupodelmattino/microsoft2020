@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
  */
 public class App {
     private final static Logger LOG = Logger.getLogger(App.class);
-    //todo: modules to add 1. Node Loader 2. Logger
     public static void main(String[] args) {
         new App().execute();
     }

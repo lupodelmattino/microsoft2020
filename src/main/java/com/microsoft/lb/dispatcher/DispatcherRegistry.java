@@ -4,17 +4,24 @@ import com.microsoft.lb.dispatcher.api.TaskDispatcher;
 import com.microsoft.lb.exceptions.DispatcherException;
 import com.microsoft.lb.node.api.ExecutorNode;
 import com.microsoft.lb.task.Task;
+import com.microsoft.lb.util.AppConfig;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class DispatcherRegistry {
+
     private Map<String, TaskDispatcher> dispatcherMap = new HashMap<>();
+    private AppConfig appConfig;
+
+    public void setAppConfig(AppConfig appConfig) {
+        this.appConfig = appConfig;
+    }
+
     public void addNode(ExecutorNode node){
         TaskDispatcher dispatcher = dispatcherMap.get(node.getType());
         if(dispatcher == null){
-            //todo:Replace dispatcher initialization
-            dispatcher = new RoundRobinDispatcher();
+            dispatcher = appConfig.getDispatcher();
             dispatcherMap.put(node.getType(), dispatcher);
         }
         dispatcher.addNode(node);

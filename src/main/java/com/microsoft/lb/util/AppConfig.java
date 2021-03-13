@@ -1,5 +1,8 @@
 package com.microsoft.lb.util;
 
+import com.microsoft.lb.dispatcher.DispatcherRegistry;
+import com.microsoft.lb.dispatcher.RoundRobinDispatcher;
+import com.microsoft.lb.dispatcher.api.TaskDispatcher;
 import com.microsoft.lb.exceptions.ConfigurationException;
 import com.microsoft.lb.node.api.SimpleExecutorNodeFactory;
 import com.microsoft.lb.nodeLoader.FileSystemJsonNodeLoader;
@@ -79,4 +82,13 @@ public class AppConfig {
     }
 
 
+    public DispatcherRegistry getDispatcherRegistry() {
+        DispatcherRegistry registry = new DispatcherRegistry();
+        registry.setAppConfig(this);
+        return registry;
+    }
+
+    public TaskDispatcher getDispatcher() {
+        return new RoundRobinDispatcher();
+    }
 }

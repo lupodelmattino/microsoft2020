@@ -27,7 +27,7 @@ public class FileSystemJsonNodeLoader implements NodeLoader {
     public void init(){
         String path = appConfig.getContext().getNodeConfigPath();
         NodeMetadata nodeMetadata = loadFromFile(path);
-        dispatcherRegistry = new DispatcherRegistry();
+        dispatcherRegistry = appConfig.getDispatcherRegistry();
         nodeFactory = appConfig.getNodeFactory();
         for(NodeMetadata.Entry entry : nodeMetadata.getNodes()){
             dispatcherRegistry.addNode(nodeFactory.createNode(entry));
