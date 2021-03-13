@@ -1,6 +1,5 @@
 package com.microsoft.lb.services;
 
-import com.microsoft.lb.App;
 import com.microsoft.lb.dispatcher.DispatcherRegistry;
 import com.microsoft.lb.dispatcher.api.TaskDispatcher;
 import com.microsoft.lb.exceptions.DispatcherException;
@@ -24,16 +23,22 @@ public class LoadBalancer {
     public void balance(){
         Task task = null;
         LOG.info("About to start load balancer with " + inputQueue.toString() + " capacity " + inputQueue.getSize());
+        boolean active = true;
         try {
-            while (true) {
+            while (active) {
                 try {
                     task = inputQueue.take();
-                    synchronized (task) {
-                        TaskDispatcher dispatcher = dispatcherRegistry.getDispatcher(task.getType());
-                        LOG.debug("About to dispatch the task " + task);
-                        Thread.sleep((task.getTsStart() - currentTimeStamp) * 1000);
-                        currentTimeStamp = task.getTsStart();
-                        dispatcher.dispatch(task);
+                    if(!task.getType().equals(Task.EOF)) {
+                        synchronized (task) {
+                            TaskDispatcher dispatcher = dispatcherRegistry.getDispatcher(task.getType());
+                            LOG.debug("About to dispatch the task " + task);
+                            Thread.sleep((task.getTsStart() - currentTimeStamp) * 1000);
+                            currentTimeStamp = task.getTsStart();
+                            dispatcher.dispatch(task);
+                        }
+                    }else {
+                        dispatcherRegistry.broadcast(task);
+                        active = false;
                     }
                 } catch (DispatcherException e) {
                     LOG.error(String.format("Failed to dispatch Task: %s", task.toString()));

@@ -29,7 +29,6 @@ public class ActivityLogger implements Closeable {
     public void log(String line){
         try {
             writer.write(line);
-            writer.newLine();
             writer.flush();
         } catch (IOException e) {
             LOG.error(String.format("Failed to log the Load Balancer activity: %s ", line), e);

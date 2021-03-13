@@ -1,57 +1,20 @@
 package com.microsoft.lb.task;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+public interface Task {
+    String EOF = "EOF";
+    String getType();
 
-public class Task {
+    void setType(String type);
 
-    @JsonProperty("task_type")
-    private String type;
-    @JsonProperty("task_name")
-    private String name;
-    @JsonProperty("duration")
-    private int duration;
-    @JsonProperty("timestamp_start")
-    private int tsStart;
+    String getName();
 
-    public String getType() {
-        return type;
-    }
+    void setName(String name);
 
-    public void setType(String type) {
-        this.type = type;
-    }
+    int getDuration();
 
-    public String getName() {
-        return name;
-    }
+    void setDuration(int duration);
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    int getTsStart();
 
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
-    public int getTsStart() {
-        return tsStart;
-    }
-
-    public void setTsStart(int tsStart) {
-        this.tsStart = tsStart;
-    }
-
-    @Override
-    public String toString() {
-        return "Task{" +
-                "type='" + type + '\'' +
-                ", name='" + name + '\'' +
-                ", duration=" + duration +
-                ", tsStart=" + tsStart +
-                '}';
-    }
+    void setTsStart(int tsStart);
 }

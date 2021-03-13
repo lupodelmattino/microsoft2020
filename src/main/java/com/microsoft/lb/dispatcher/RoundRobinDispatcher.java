@@ -11,9 +11,15 @@ public class RoundRobinDispatcher implements TaskDispatcher {
     private Queue<ExecutorNode> nodes = new LinkedList<>();
     @Override
     public void dispatch(Task task) {
-        ExecutorNode node = nodes.poll();
-        nodes.offer(node);
-        node.execute(task);
+        if(!task.getType().equals(Task.EOF)) {
+            ExecutorNode node = nodes.poll();
+            nodes.offer(node);
+            node.execute(task);
+        }else{
+            while (nodes.size() > 0){
+                nodes.poll().execute(task);
+            }
+        }
     }
 
     @Override

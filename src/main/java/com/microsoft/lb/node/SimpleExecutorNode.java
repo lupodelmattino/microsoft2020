@@ -2,6 +2,7 @@ package com.microsoft.lb.node;
 
 import com.microsoft.lb.node.api.ExecutorNode;
 import com.microsoft.lb.services.ActivityLogger;
+import com.microsoft.lb.task.EOFTask;
 import com.microsoft.lb.task.Task;
 import org.apache.log4j.Logger;
 
@@ -35,15 +36,18 @@ public class SimpleExecutorNode implements ExecutorNode, Runnable {
         try {
             while(true) {
                 Task task = queue.take();
+                if(task.getType().equals(Task.EOF)){
+                    break;
+                }
                 currentTimestamp = Math.max(task.getTsStart(), currentTimestamp);
                 synchronized (task) {
-                    String startMessage = String.format("Started task=’%s’ of type=’%s’ on node=’%s’ at ‘%d’",
+                    String startMessage = String.format("Started task=’%s’ of type=’%s’ on node=’%s’ at ‘%d’\n",
                             task.getName(), task.getType(), getName(), currentTimestamp
                     );
                     activityLogger.log(startMessage);
                     Thread.sleep(task.getDuration() * 1000);
                     currentTimestamp += task.getDuration();
-                    String endMessage = String.format("Finished task=’%s’ of type=’%s’ on node=’%s’ at ‘%d’",
+                    String endMessage = String.format("Finished task=’%s’ of type=’%s’ on node=’%s’ at ‘%d’\n",
                             task.getName(), task.getType(), getName(), currentTimestamp
                     );
                     activityLogger.log(endMessage);
