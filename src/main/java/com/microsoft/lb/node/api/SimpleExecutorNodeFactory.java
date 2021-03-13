@@ -9,6 +9,7 @@ public class SimpleExecutorNodeFactory implements NodeFactory {
         SimpleExecutorNode node = new SimpleExecutorNode();
         node.setType(entry.getType());
         node.setName(entry.getName());
+        node.start();
         return node;
     }
 }

@@ -10,6 +10,7 @@ public class LoadBalancer {
     private AppConfig appConfig;
     private DispatcherRegistry dispatcherRegistry;
     private InputQueue inputQueue;
+    private int currentTimeStamp = 0;
     public void setAppConfig(AppConfig appConfig) {
         this.appConfig = appConfig;
     }
@@ -24,9 +25,13 @@ public class LoadBalancer {
             while (true) {
                 try {
                     task = inputQueue.take();
-                    TaskDispatcher dispatcher = dispatcherRegistry.getDispatcher(task.getType());
-                    System.out.println("About to dispatch the task " + task);
-                    dispatcher.dispatch(task);
+                    synchronized (task) {
+                        TaskDispatcher dispatcher = dispatcherRegistry.getDispatcher(task.getType());
+                        System.out.println("About to dispatch the task " + task);
+                        Thread.sleep((task.getTsStart() - currentTimeStamp) * 1000);
+                        currentTimeStamp = task.getTsStart();
+                        dispatcher.dispatch(task);
+                    }
                 } catch (DispatcherException e) {
                     //todo:replace with logger
                     System.out.println(String.format("Failed to dispatch Task: %s", task.toString()));
