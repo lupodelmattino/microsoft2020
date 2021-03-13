@@ -31,4 +31,8 @@ public class ResourceContext {
     public String getOutputFilePath() {
         return props.getProperty("outputFilePath");
     }
+
+    public String getDispatcherType(){
+        return props.getProperty("dispatcherType");
+    }
 }

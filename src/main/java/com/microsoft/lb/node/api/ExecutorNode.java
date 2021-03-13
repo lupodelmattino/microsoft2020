@@ -8,4 +8,6 @@ public interface ExecutorNode {
     String getName();
     void setType(String type);
     void setName(String name);
+
+    int getQueueSize();
 }

@@ -88,6 +88,12 @@ public class SimpleExecutorNode implements ExecutorNode, Runnable {
     }
 
     @Override
+    public int getQueueSize(){
+        return queue.size();
+
+    }
+
+    @Override
     public String toString() {
         return "SimpleExecutorNode{" +
                 "type='" + type + '\'' +

@@ -1,9 +1,11 @@
 package com.microsoft.lb.util;
 
 import com.microsoft.lb.dispatcher.DispatcherRegistry;
+import com.microsoft.lb.dispatcher.QueueSizeDispatcher;
 import com.microsoft.lb.dispatcher.RoundRobinDispatcher;
 import com.microsoft.lb.dispatcher.api.TaskDispatcher;
 import com.microsoft.lb.exceptions.ConfigurationException;
+import com.microsoft.lb.node.api.NodeFactory;
 import com.microsoft.lb.node.api.SimpleExecutorNodeFactory;
 import com.microsoft.lb.nodeLoader.FileSystemJsonNodeLoader;
 import com.microsoft.lb.nodeLoader.NodeLoader;
@@ -11,9 +13,8 @@ import com.microsoft.lb.services.ActivityLogger;
 import com.microsoft.lb.services.InputQueue;
 import com.microsoft.lb.services.LoadBalancer;
 import com.microsoft.lb.services.TaskLoaderJob;
-import com.microsoft.lb.task.input.FileSystemJsonTaskReader;
 import com.microsoft.lb.task.api.TaskReader;
-import com.microsoft.lb.node.api.NodeFactory;
+import com.microsoft.lb.task.input.FileSystemJsonTaskReader;
 
 import java.io.FileNotFoundException;
 
@@ -22,6 +23,10 @@ public class AppConfig {
     private InputQueue inputQueue;
     private ActivityLogger activityLogger;
     private SimpleExecutorNodeFactory nodeFactory;
+    private enum DispatcherType {
+        roundRobin,
+        queueSize
+    }
     public AppConfig() {
         context = new ResourceContext();
         inputQueue = new InputQueue(context.getQueueCapacity());
@@ -89,6 +94,12 @@ public class AppConfig {
     }
 
     public TaskDispatcher getDispatcher() {
-        return new RoundRobinDispatcher();
+        String conf = context.getDispatcherType();
+        DispatcherType dt = DispatcherType.valueOf(conf);
+        if( dt == DispatcherType.queueSize)
+            return new QueueSizeDispatcher();
+        if( dt == DispatcherType.roundRobin)
+            return new RoundRobinDispatcher();
+        throw new ConfigurationException("Bad dispatcher type: " + conf);
     }
 }
