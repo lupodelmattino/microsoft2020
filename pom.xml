@@ -22,7 +22,7 @@
                     <programs>
                         <program>
                             <mainClass>com.microsoft.lb.App</mainClass>
-                            <id>microsoft</id>
+                            <id>lb</id>
                         </program>
                     </programs>
                 </configuration>
