@@ -30,31 +30,36 @@ public class LoadBalancer {
     public void start(){
         Task task = null;
         LOG.info("About to start load balancer with " + inputQueue.toString() + " capacity " + inputQueue.getSize());
-        try {
-            while (true) {
-                try {
-                    task = inputQueue.take();
-                    if(!task.getType().equals(Task.EOF)) {//If not last task in input
-                        synchronized (task) {
-                            //get dispatcher by task type
-                            TaskDispatcher dispatcher = dispatcherRegistry.getDispatcher(task.getType());
-                            LOG.debug("About to dispatch the task " + task);
-                            Thread.sleep((task.getTsStart() - currentTimeStamp) * 1000);
-                            currentTimeStamp = task.getTsStart();
-                            dispatcher.dispatch(task);
+        while (true) {
+            try {
+                task = inputQueue.take();
+                if(!task.getType().equals(Task.EOF)) {//If not last task in input
+                    synchronized (task) {
+                        //get dispatcher by task type
+                        TaskDispatcher dispatcher = dispatcherRegistry.getDispatcher(task.getType());
+                        int delay = (task.getTsStart() - currentTimeStamp);
+                        if(delay < 0){
+                            LOG.error("Invalid timestamp in task " + task);
+                            continue;
                         }
-                    }else {//Last task in input is dummy task. Broadcast the dummy task to stop all components and
-                        // break the loop
-                        dispatcherRegistry.broadcast(task);
-                        break;
+
+                        LOG.debug(String.format("About to dispatch the task current: %d, ts %d, delay %d, %s",
+                                currentTimeStamp,
+                                task.getTsStart(),
+                                delay,
+                                task));
+                        Thread.sleep(delay * 1000);
+                        currentTimeStamp = task.getTsStart();
+                        dispatcher.dispatch(task);
                     }
-                } catch (DispatcherException e) {
-                    LOG.error(String.format("Failed to dispatch Task: %s", task.toString()));
-                    e.printStackTrace();
+                }else {//Last task in input is dummy task. Broadcast the dummy task to stop all components and
+                    // break the loop
+                    dispatcherRegistry.broadcast(task);
+                    break;
                 }
+            } catch (Exception e) {
+                LOG.error(String.format("Failed to dispatch Task: %s", task.toString()), e);
             }
-        }catch (InterruptedException e){
-            LOG.warn("Shutting down the load balancer");
         }
     }
 }

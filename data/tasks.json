@@ -2,5 +2,6 @@
 { "task_name": "web_request", "task_type": "web_task", "timestamp_start": 0, "duration": 10 }
 { "task_name": "queue_job_2", "task_type": "queueing_task", "timestamp_start": 1, "duration": 3 }
 { "task_name": "queue_job_3", "task_type": "queueing_task", "timestamp_start": 5, "duration": 3 }
-{ "task_name": "queue_job_3", "task_type": "queueing_task", "timestamp_start": 6, "duration": 6 }
-{ "task_name": "queue_job_3", "task_type": "database_task", "timestamp_start": 7, "duration": 7 }
+{ "task_name": "queue_job_3", "task_type": "queueing_task", "timestamp_start": 7, "duration": 6 }
+{ "task_name": "queue_job_3", "task_type": "database_task", "timestamp_start": 10, "duration": 7 }
+{ "task_name": "queue_job_1", "task_type": "queueing_task", "timestamp_start": 15, "duration": 15 }

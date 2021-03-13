@@ -3,6 +3,7 @@ package com.microsoft.lb.task.input;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.lb.exceptions.ConfigurationException;
+import com.microsoft.lb.task.EOFTask;
 import com.microsoft.lb.task.SimpleTask;
 import com.microsoft.lb.task.Task;
 import com.microsoft.lb.task.api.TaskReader;
@@ -37,15 +38,18 @@ public class FileSystemJsonTaskReader implements TaskReader {
     public Task readTask() {
         Task task = null;
         String line = null;
-        if(scan.hasNextLine())
+        if(scan.hasNextLine()) {
             try {
-                line = scan.nextLine();
-                task = objectMapper.readValue(line, SimpleTask.class);
-
+                line = scan.nextLine().trim();
+                if (line.length() != 0 && line.charAt(0) != '#')
+                    task = objectMapper.readValue(line, SimpleTask.class);
             } catch (JsonProcessingException e) {
                 LOG.info(String.format("Failed to create task from %s", line));
                 e.printStackTrace();
             }
+        }else{
+            task = new EOFTask();
+        }
         return task;
     }
 

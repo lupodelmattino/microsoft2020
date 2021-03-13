@@ -2,6 +2,7 @@ package com.microsoft.lb.services;
 
 import com.microsoft.lb.task.Task;
 
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -10,10 +11,12 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class InputQueue {
     private final int capacity;
-    private BlockingQueue<Task> queue = new LinkedBlockingQueue();
+//    private BlockingQueue<Task> queue = new LinkedBlockingQueue();
+    private BlockingQueue<Task> queue;
 
     public InputQueue(int capacity){
         this.capacity = capacity;
+        queue = new ArrayBlockingQueue(capacity);
     }
 
     public int getCapacity() {

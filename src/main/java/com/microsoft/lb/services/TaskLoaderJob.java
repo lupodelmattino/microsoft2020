@@ -31,15 +31,18 @@ public class TaskLoaderJob {
      */
     public void loadTasks(){
         new Thread(() -> {
-            Task task = taskReader.readTask();
+
             LOG.info("Starting loading tasks");
             try {
-                while (task != null){
+                while (true){
+                    Task task = taskReader.readTask();
+                    if(task == null){
+                        continue;
+                    }
                     inputQueue.addTask(task);
-                    task = taskReader.readTask();
+                    if(task.getType().equals(Task.EOF))
+                        break;
                 }
-                inputQueue.addTask(new EOFTask());
-
             } catch (InterruptedException e) {
                 LOG.error(e);
             }finally {
